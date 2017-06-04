@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 
 def setup_database(db):
     cursor = db.cursor()
-    cursor.execute("CREATE TABLE IF NOT EXISTS urls (url text, id text)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS urls (id text, url text)")
     db.commit()
 
 def id_generator(size=6, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
@@ -22,10 +22,10 @@ def insert_url(db, url):
 
     cursor.execute("""
             INSERT INTO urls
-            (url, id)
+            (id, url)
             VALUES
             ('{}', '{}')
-            """.format(url, url_id))
+            """.format(url_id, url))
     db.commit()
     return url_id
 
