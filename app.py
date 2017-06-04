@@ -1,12 +1,15 @@
+import logging
 import random
 import string
 import sqlite3
 import sys
-from uuid import uuid4
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 def setup_database(db):
     cursor = db.cursor()
-    cursor.execute("CREATE TABLE IF NOT EXISTS urls (url text, uuid text, url_id text)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS urls (url text, id text)")
     db.commit()
 
 def id_generator(size=6, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
@@ -15,29 +18,34 @@ def id_generator(size=6, chars=string.ascii_lowercase + string.ascii_uppercase +
 def insert_url(db, url):
     cursor = db.cursor()
 
-    picture_uuid = uuid4()
     url_id = id_generator()
 
     cursor.execute("""
             INSERT INTO urls
-            (url, uuid, url_id)
+            (url, id)
             VALUES
-            ('{}', '{}', '{}')
-            """.format(url, picture_uuid, url_id))
+            ('{}', '{}')
+            """.format(url, url_id))
     db.commit()
-    return picture_uuid, url_id
+    return url_id
 
 def main():
+    log.debug("I'm alive")
     database_connection = sqlite3.connect('database.sqlite')
     try:
         setup_database(database_connection)
     except:
         raise
+    else:
+        log.info("Database is setup")
 
     try:
-        picture_uuid, url_id = insert_url(database_connection, sys.argv[1])
+        url_id = insert_url(database_connection, sys.argv[1])
     except:
         raise
+    else:
+        log.info("Created URL entry with ID {}".format(url_id))
 
 if __name__ == "__main__":
     main()
+    log.info("Done")
