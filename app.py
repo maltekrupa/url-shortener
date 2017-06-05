@@ -30,17 +30,35 @@ def id_generator(size=6, chars=string.ascii_lowercase + string.ascii_uppercase +
 def insert_url(db, url, url_id):
     cursor = db.cursor()
     now = datetime.datetime.utcnow().isoformat()
+    data = (now, url_id, url,)
 
     try:
         cursor.execute("""
                 INSERT INTO urls
                 (timestamp, id, url)
                 VALUES
-                ('{}', '{}', '{}')
-                """.format(now, url_id, url))
+                (?, ?, ?)
+                """, data)
         db.commit()
     except:
         raise
+
+def get_url_from_id(db, url_id):
+    cursor = db.cursor()
+    data = (url_id,)
+
+    try:
+        cursor.execute("""
+                SELECT * FROM urls
+                WHERE id == ?
+                ORDER BY timestamp DESC
+                LIMIT 1
+                """, data)
+    except:
+        raise
+    else:
+        result = cursor.fetchone()
+        return result
 
 def url_valid(url):
     if not validators.url(url, public=True):
@@ -59,7 +77,7 @@ def url_reachable(url):
 def page_not_found(e):
     return render_template('404.html'), 404
 
-@app.route('/url/', defaults={'url': ''})
+@app.route('/url', defaults={'url': ''})
 @app.route('/url/<path:url>')
 def url(url):
     if request.method != "GET":
@@ -95,19 +113,21 @@ def url(url):
         "url": url
         })
 
+@app.route('/<string(length=6):url_id>')
+def id(url_id):
+    db_response = get_url_from_id(database_connection, url_id)
+    if not db_response is None:
+        log.info(db_response)
+        return jsonify(db_response)
+    else:
+        return render_template('404.html'), 404
+
+
 @app.route('/')
 def index():
     return render_template('index.html',
             greeting="Hello!",
             greeting_small="Shorten a URL and get a preview of the status quo.")
-
-def main():
-    try:
-        url_id = insert_url(database_connection, sys.argv[1])
-    except:
-        raise
-    else:
-        log.info("Created URL entry with ID {}".format(url_id))
 
 if __name__ == "__main__":
     log.debug("I'm alive")
