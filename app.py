@@ -55,6 +55,10 @@ def url_reachable(url):
         log.warning("Cannot reach {}".format(url))
         raise
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 @app.route('/url/', defaults={'url': ''})
 @app.route('/url/<path:url>')
 def url(url):
