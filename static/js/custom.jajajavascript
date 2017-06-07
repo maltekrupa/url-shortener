@@ -1,0 +1,47 @@
+var urlField = document.getElementById('urlInput');
+var urlButton = document.getElementById('urlButton');
+var messageField = document.getElementById('urlInputLabel');
+
+function showErrorMessage(message) {
+  messageField.innerHTML = "Error: " + message + ". Sorry :(";
+  messageField.style.backgroundColor = '#FF0000';
+  setTimeout(function(){
+      messageField.innerHTML = "Your URL"
+      messageField.style.backgroundColor = '#FFFFFF';
+  }, 3000);
+}
+
+function forwardToShortUrl(id) {
+  var fullDomain = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port: '');
+  window.location.href = fullDomain + '/' + id;
+}
+
+function getIdForUrl() {
+  var r = new XMLHttpRequest();
+  r.open("GET", "url/" + urlField.value, true);
+
+  r.onreadystatechange = function () {
+    if(r.readyState != 4 || r.status != 200) {
+      return;
+    }
+    response = JSON.parse(r.responseText);
+    console.log(response);
+    if(response.error == null) {
+      forwardToShortUrl(response.id);
+    } else {
+      showErrorMessage(response.error);
+    }
+  };
+
+  r.send();
+  return false;
+};
+
+urlButton.onclick = getIdForUrl;
+
+urlField.addEventListener("keydown", function(event) {
+    if(event.keyCode == 13) {
+        event.preventDefault();
+        getIdForUrl();
+    }
+});

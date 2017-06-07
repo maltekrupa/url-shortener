@@ -1,34 +1,25 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}">
-  </head>
-  <body>
-    <div class="modal fade" id="pleaseWaitDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1>Processing...</h1>
-          <p>This might take a couple of seconds.</p>
-        </div>
-        <div class="modal-body">
-          <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
-          </div>
-        </div>
-      </div>
-    </div>
+<head>
 
-    <div class="container">
-      {% block content %}{% endblock %}
+  <meta charset="utf-8">
+  <title>w9f.de - URL shortener</title>
+  <meta name="description" content="Get a short version of an URL with auto-preview image and now auto forwarding.">
+  <meta name="author" content="@computerfoo">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-      <script type=text/javascript src="{{ url_for('static', filename='jquery-3.1.1.min.js') }}"></script>
-      <script type=text/javascript src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
-      <script type=text/javascript src="{{ url_for('static', filename='custom.js') }}"></script>
-    </div>
-  </body>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}" type="text/css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}" type="text/css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}" type="text/css">
+
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='css/fonts.css') }}">
+</head>
+<body>
+
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+
+  <script type=text/javascript src="{{ url_for('static', filename='js/custom.jajajavascript') }}"></script>
+</body>
 </html>

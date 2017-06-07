@@ -1,32 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}Webshot{% endblock %}
-
 {% block content %}
-      <div class="page-header">
-        <h1>{{ greeting }} <small>{{ greeting_small }}</small></h1>
+    <div class="row">
+      <div class="one-half column" style="margin-top: 25%">
+        <h4>URL shortener with a preview and no automatic forwarding</h4>
+        <p>Give it an URL and you'll receive a short link pointing to your URL. When you click the short link, you'll get an overview of the target and won't be auto forwarded.</p>
       </div>
-      <div class="row">
-        <div class="col-xs-12 col-md-12">
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="https://www.google.com" id="input_url">
-            <span class="input-group-btn">
-              <button class="btn btn-default" type="button" id="screenshot">Screenshot!</button>
-            </span>
+      <div class="one-half column" style="margin-top: 30%">
+        <form>
+          <div class="row">
+            <div class="twelve columns">
+              <label for="urlInput" id="urlInputLabel">Your URL</label>
+              <input class="u-full-width" type="text" placeholder="https://myspace.com/cat-pics.aspx?res=grande-mobile" id="urlInput" autofocus>
+            </div>
           </div>
-        </div>
+          <button class="button-primary" id="urlButton" type="button">Submit</button>
+        </form>
       </div>
-      <br>
-      <div class="alert alert-info hidden" role="alert" id="invalid_url">This does not look like a valid URL. :(</div>
-      <div class="alert alert-info hidden" role="alert" id="unreachable_url">Sadly I cannot reach that URL. :(</div>
-      <br>
-      <div class="row">
-        <div class="col-xs-6 col-md-6">
-        </div>
-        <div class="col-xs-6 col-md-6 hidden" id="image_div">
-          <a href="" class="thumbnail">
-            <img src="" id="image_content" class="img-thumbnail img-responsive">
-          </a>
-        </div>
-      </div>
+    </div>
 {% endblock %}
