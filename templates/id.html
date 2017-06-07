@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="row">
+      <div class="eleven columns" style="margin-top: 5%">
+        <table class="u-full-width">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Date of creation</th>
+              <th>URL</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="{{ data['id'] }}">{{ data['id'] }}</a></td>
+              <td>{{ data['timestamp'] }}</td>
+              <td><a href="{{ data['url'] }}">{{ data['url'] }}</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+{% endblock %}

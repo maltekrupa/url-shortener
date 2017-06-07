@@ -119,7 +119,7 @@ def id(url_id):
     db_response = get_url_from_id(database_connection, url_id)
     if not db_response is None:
         log.info(db_response)
-        return jsonify(db_response)
+        return render_template('id.html', data=db_response), 200
     else:
         return render_template('404.html'), 404
 
@@ -134,6 +134,7 @@ if __name__ == "__main__":
     log.debug("I'm alive")
 
     database_connection = sqlite3.connect('database.sqlite', check_same_thread=False)
+    database_connection.row_factory = sqlite3.Row
     try:
         setup_database(database_connection)
     except:
