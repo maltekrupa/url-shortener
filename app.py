@@ -88,7 +88,7 @@ def url(url):
     if len(url) <= 0:
         raise ValueError("No url found")
 
-    if not url.startswith("http://") or not url.startswith("https://"):
+    if not url.startswith("http://") and not url.startswith("https://"):
         url = "{}{}".format("http://", url)
 
     try:
@@ -109,6 +109,7 @@ def url(url):
         log.info("Created {} for: {}".format(url_id, url))
 
     return jsonify({
+        "error": None,
         "id": url_id,
         "url": url
         })
@@ -132,7 +133,7 @@ def index():
 if __name__ == "__main__":
     log.debug("I'm alive")
 
-    database_connection = sqlite3.connect('database.sqlite')
+    database_connection = sqlite3.connect('database.sqlite', check_same_thread=False)
     try:
         setup_database(database_connection)
     except:
@@ -141,5 +142,5 @@ if __name__ == "__main__":
         log.info("Database is setup")
 
     log.info("Starting webapp")
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True)
     log.info("Done")
