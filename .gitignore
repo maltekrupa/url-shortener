@@ -2,3 +2,4 @@
 images
 database.sqlite
 *.pyc
+.envrc
