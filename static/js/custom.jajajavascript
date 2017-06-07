@@ -18,7 +18,7 @@ function forwardToShortUrl(id) {
 
 function getIdForUrl() {
   var r = new XMLHttpRequest();
-  r.open("GET", "url/" + urlField.value, true);
+  r.open("POST", "url/", true);
 
   r.onreadystatechange = function () {
     if(r.readyState != 4 || r.status != 200) {
@@ -33,7 +33,9 @@ function getIdForUrl() {
     }
   };
 
-  r.send();
+  r.setRequestHeader("X-CSRFToken", csrf_token);
+  r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  r.send("url=" + urlField.value);
   return false;
 };
 

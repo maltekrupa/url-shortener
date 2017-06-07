@@ -1,5 +1,6 @@
 import datetime
 import logging
+import os
 import random
 import string
 import sqlite3
@@ -11,6 +12,9 @@ from flask import render_template
 from flask import request
 from flask import jsonify
 
+from flask_wtf.csrf import CSRFProtect
+from flask_wtf.csrf import CSRFError
+
 import validators
 import requests
 
@@ -18,6 +22,8 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 app = Flask(__name__)
+app.secret_key = os.environ["SECRET_KEY"]
+csrf = CSRFProtect(app)
 
 def setup_database(db):
     cursor = db.cursor()
@@ -73,20 +79,21 @@ def url_reachable(url):
         log.warning("Cannot reach {}".format(url))
         raise
 
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    log.info("Invalid CSRF")
+    return "No shirt, no CSRF? No service!", 400
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
-@app.route('/url', defaults={'url': ''})
-@app.route('/url/<path:url>')
-def url(url):
-    if request.method != "GET":
-        response = Response("Nope")
-        response.headers["What-are-you-doing?"] = "Leave me alone!"
-        return response
+@app.route('/url/', methods=["GET", "POST"])
+def url():
+    if request.method != "POST":
+        return render_template('404.html'), 404
 
-    if len(url) <= 0:
-        raise ValueError("No url found")
+    url = request.form['url']
 
     if not url.startswith("http://") and not url.startswith("https://"):
         url = "{}{}".format("http://", url)
@@ -144,4 +151,5 @@ if __name__ == "__main__":
 
     log.info("Starting webapp")
     app.run(host='0.0.0.0', debug=True)
+
     log.info("Done")
