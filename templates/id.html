@@ -14,10 +14,13 @@
       </div>
       <div class="twelve columns">
         <h5>Preview image:</h5>
-        <img src="/{{ data['id'] }}/img" style="display: block; margin: auto;" />
+        <div class="fill-screen">
+          <img class="make-it-fit" src="/{{ data['id'] }}/img" style="display: block; margin: auto;" />
+        </div>
       </div>
     </div>
 
     <div class="corner-ribbon top-right sticky blue"><a href="/" style="text-decoration: none; color: inherit;">Create new link</a></div>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/ribbon.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" type="text/css">
 {% endblock %}
