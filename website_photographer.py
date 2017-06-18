@@ -42,7 +42,8 @@ def preview_exists(url_id):
 
 def create_image_for_url(url_id, url):
     driver.get(url)
-    driver.save_screenshot('images/' + url_id + '.png')
+    driver.save_screenshot("images/{}.png".format(url_id))
+    log.info("Saved image for {}.".format(url_id))
 
 def main():
     while True:
@@ -63,9 +64,10 @@ def main():
                 continue
 
         time.sleep(0.5)
+        log.info("Found no new urls.")
 
 if __name__ == '__main__':
-    log.debug("I'm alive")
+    log.info("I'm alive")
 
     database_connection = psycopg2.connect("dbname=urls user=postgres")
     main()
