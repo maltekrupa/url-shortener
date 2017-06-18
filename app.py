@@ -143,7 +143,10 @@ def id_image(url_id):
         log.info("ID {} is valid. Let's serve an image.".format(url_id))
         pwd = os.path.abspath("images")
         filename = pwd + "/" + str(url_id) + '.png'
-        return send_file(filename, mimetype='image/png')
+        if os.path.isfile(filename):
+            return send_file(filename, mimetype='image/png')
+        else:
+            return send_file('static/waiting.jpg', mimetype='image/jpg')
 
 @app.route('/')
 def index():
