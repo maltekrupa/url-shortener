@@ -4,6 +4,7 @@ import os
 import random
 import string
 import sys
+import urllib
 
 from pytz import utc
 
@@ -72,9 +73,9 @@ def get_url_from_id(db, url_id):
 
 def url_valid(url):
     if not validators.url(url, public=True):
-        log.warning("Invalid URL: {}".format(url))
-        raise ValueError("Invalid URL")
-    log.info("Valid URL: {}".format(url))
+        log.warning("Invalid URL ({}) or URN ({}).".format(url, created_url))
+        raise ValueError("Invalid URL or URN")
+    log.info("Valid URL or URN: {}".format(url))
 
 def url_reachable(url):
     try:
@@ -139,13 +140,15 @@ def url():
     if request.method != "POST":
         return render_template('404.html'), 404
 
-    url = request.form['url']
+    url = urllib.parse.unquote(request.form['url'])
 
     if not url.startswith("http://") and not url.startswith("https://"):
         url = "{}{}".format("http://", url)
 
+    real_url = "//".join(list(filter(None, url.split('/')[:3])))
     try:
-        url_valid(url)
+        url_valid(real_url)
+        log.info("Validated {}.".format(real_url))
     except:
         response = jsonify({"error": "invalid url"})
         response.headers['Get your *@#% together'] = "Please"

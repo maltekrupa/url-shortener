@@ -19,8 +19,5 @@
   <div class="container">
     {% block content %}{% endblock %}
   </div>
-
-  <script>var csrf_token = '{{ csrf_token() }}';</script>
-  <script type=text/javascript src="{{ url_for('static', filename='js/custom.jajajavascript') }}"></script>
 </body>
 </html>
