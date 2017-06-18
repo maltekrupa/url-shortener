@@ -2,23 +2,19 @@
 
 {% block content %}
     <div class="row">
-      <div class="eleven columns" style="margin-top: 5%">
-        <table class="u-full-width">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Date of creation</th>
-              <th>URL</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><a href="{{ data['id'] }}">{{ data['id'] }}</a></td>
-              <td>{{ data['timestamp'] }}</td>
-              <td><a href="{{ data['url'] }}">{{ data['url'] }}</a></td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="twelve columns" style="margin-top: 5%">
+        <h4>Hi</h4>
+        <p>The link you requested is a shot link which points to a (usually) very long URL.</p>
+      </div>
+      <div class="twelve columns">
+        <h5>Information about the requested link:</h5>
+        <p>ID: <a href="{{ data['id'] }}">{{ data['id'] }}</a><br />
+        Created: {{ data['timestamp'] }}<br />
+        Destination: <a href="{{ data['url'] }}">{{ data['url'] }}</a></p>
+      </div>
+      <div class="twelve columns">
+        <h5>Preview image:</h5>
+        <img src="/{{ data['id'] }}/img" style="display: block; margin: auto;" />
       </div>
     </div>
 {% endblock %}
