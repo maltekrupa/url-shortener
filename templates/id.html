@@ -4,7 +4,7 @@
     <div class="row">
       <div class="twelve columns" style="margin-top: 5%">
         <h4>Hi</h4>
-        <p>The link you requested is a shot link which points to a (usually) very long URL.</p>
+        <p>The link you requested is a short link which points to a (usually) very long URL.</p>
       </div>
       <div class="twelve columns">
         <h5>Information about the requested link:</h5>
@@ -17,4 +17,7 @@
         <img src="/{{ data['id'] }}/img" style="display: block; margin: auto;" />
       </div>
     </div>
+
+    <div class="corner-ribbon top-left sticky blue"><a href="/" style="text-decoration: none; color: inherit;">Create new link</a></div>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ribbon.css') }}" type="text/css">
 {% endblock %}

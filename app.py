@@ -190,6 +190,7 @@ def id_image(url_id):
         if os.path.isfile(filename):
             return send_file(filename, mimetype='image/png')
         else:
+            log.info("Image for {} is not yet ready!".format(url_id))
             return send_file('static/waiting.jpg', mimetype='image/jpg')
 
 @app.route('/')
