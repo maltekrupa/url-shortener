@@ -3,7 +3,6 @@ import logging
 import os
 import random
 import string
-import sqlite3
 import sys
 
 from flask import Flask
@@ -17,6 +16,9 @@ from flask_wtf.csrf import CSRFError
 
 import validators
 import requests
+
+import psycopg2
+import psycopg2.extras
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -43,20 +45,20 @@ def insert_url(db, url, url_id):
                 INSERT INTO urls
                 (timestamp, id, url)
                 VALUES
-                (?, ?, ?)
+                (%s, %s, %s)
                 """, data)
         db.commit()
     except:
         raise
 
 def get_url_from_id(db, url_id):
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=psycopg2.extras.DictCursor)
     data = (url_id,)
 
     try:
         cursor.execute("""
                 SELECT * FROM urls
-                WHERE id == ?
+                WHERE id = %s
                 ORDER BY timestamp DESC
                 LIMIT 1
                 """, data)
@@ -140,8 +142,7 @@ def index():
 if __name__ == "__main__":
     log.debug("I'm alive")
 
-    database_connection = sqlite3.connect('database.sqlite', check_same_thread=False)
-    database_connection.row_factory = sqlite3.Row
+    database_connection = psycopg2.connect("dbname=urls user=postgres")
     try:
         setup_database(database_connection)
     except:
