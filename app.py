@@ -37,7 +37,7 @@ def id_generator(size=6, chars=string.ascii_lowercase + string.ascii_uppercase +
 
 def insert_url(db, url, url_id):
     cursor = db.cursor()
-    now = datetime.datetime.utcnow().isoformat()
+    now = datetime.datetime.utcnow()
     data = (now, url_id, url,)
 
     try:
@@ -131,7 +131,6 @@ def id(url_id):
         return render_template('id.html', data=db_response), 200
     else:
         return render_template('404.html'), 404
-
 
 @app.route('/')
 def index():
