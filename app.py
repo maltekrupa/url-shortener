@@ -9,6 +9,7 @@ from flask import Flask
 from flask import Response
 from flask import render_template
 from flask import request
+from flask import send_file
 from flask import jsonify
 
 from flask_wtf.csrf import CSRFProtect
@@ -126,11 +127,23 @@ def url():
 @app.route('/<string(length=6):url_id>')
 def id(url_id):
     db_response = get_url_from_id(database_connection, url_id)
-    if not db_response is None:
-        log.info(db_response)
-        return render_template('id.html', data=db_response), 200
-    else:
+    if db_response is None:
         return render_template('404.html'), 404
+    else:
+        log.info("ID {} is valid".format(url_id))
+        log.info("DB Response: {}".format(db_response))
+        return render_template('id.html', data=db_response), 200
+
+@app.route('/<string(length=6):url_id>/img')
+def id_image(url_id):
+    db_response = get_url_from_id(database_connection, url_id)
+    if db_response is None:
+        return render_template('404.html'), 404
+    else:
+        log.info("ID {} is valid. Let's serve an image.".format(url_id))
+        pwd = os.path.abspath("images")
+        filename = pwd + "/" + str(url_id) + '.png'
+        return send_file(filename, mimetype='image/png')
 
 @app.route('/')
 def index():
