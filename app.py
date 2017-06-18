@@ -5,8 +5,9 @@ import random
 import string
 import sys
 
+from pytz import utc
+
 from flask import Flask
-from flask import Response
 from flask import render_template
 from flask import request
 from flask import send_file
@@ -30,7 +31,7 @@ csrf = CSRFProtect(app)
 
 def setup_database(db):
     cursor = db.cursor()
-    cursor.execute("CREATE TABLE IF NOT EXISTS urls (timestamp text, id text, url text)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS urls (timestamp timestamptz, id text, url text)")
     db.commit()
 
 def id_generator(size=6, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
@@ -38,7 +39,7 @@ def id_generator(size=6, chars=string.ascii_lowercase + string.ascii_uppercase +
 
 def insert_url(db, url, url_id):
     cursor = db.cursor()
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now(utc)
     data = (now, url_id, url,)
 
     try:
@@ -81,6 +82,48 @@ def url_reachable(url):
     except:
         log.warning("Cannot reach {}".format(url))
         raise
+
+def pretty_date(time=False):
+    """
+    Get a datetime object or a int() Epoch timestamp and return a
+    pretty string like 'an hour ago', 'Yesterday', '3 months ago',
+    'just now', etc
+    """
+    now = datetime.datetime.now(utc)
+    if type(time) is int:
+        diff = now - datetime.datetime.fromtimestamp(time)
+    elif isinstance(time,datetime.datetime):
+        diff = now - time
+    elif not time:
+        diff = now - now
+    second_diff = diff.seconds
+    day_diff = diff.days
+
+    if day_diff < 0:
+        return ''
+
+    if day_diff == 0:
+        if second_diff < 10:
+            return "just now"
+        if second_diff < 60:
+            return str(second_diff) + " seconds ago"
+        if second_diff < 120:
+            return "a minute ago"
+        if second_diff < 3600:
+            return str(int(second_diff / 60)) + " minutes ago"
+        if second_diff < 7200:
+            return "an hour ago"
+        if second_diff < 86400:
+            return str(int(second_diff / 3600)) + " hours ago"
+    if day_diff == 1:
+        return "Yesterday"
+    if day_diff < 7:
+        return str(day_diff) + " days ago"
+    if day_diff < 31:
+        return str(int(day_diff / 7)) + " weeks ago"
+    if day_diff < 365:
+        return str(int(day_diff / 30)) + " months ago"
+    return str(int(day_diff / 365)) + " years ago"
 
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
@@ -131,8 +174,9 @@ def id(url_id):
         return render_template('404.html'), 404
     else:
         log.info("ID {} is valid".format(url_id))
-        log.info("DB Response: {}".format(db_response))
-        return render_template('id.html', data=db_response), 200
+        log.debug("DB Response: {}".format(db_response))
+        user_friendly_date = pretty_date(db_response['timestamp'])
+        return render_template('id.html', data=db_response, user_friendly_date=user_friendly_date), 200
 
 @app.route('/<string(length=6):url_id>/img')
 def id_image(url_id):
