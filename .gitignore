@@ -3,3 +3,5 @@ images
 database.sqlite
 *.pyc
 .envrc
+ghostdriver.log
+.DS_Store
