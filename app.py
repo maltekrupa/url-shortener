@@ -189,9 +189,9 @@ def id_image(url_id):
     else:
         log.info("ID {} is valid. Let's serve an image.".format(url_id))
         pwd = os.path.abspath("images")
-        filename = pwd + "/" + str(url_id) + '.png'
+        filename = pwd + "/" + str(url_id) + '.jpg'
         if os.path.isfile(filename):
-            return send_file(filename, mimetype='image/png')
+            return send_file(filename, mimetype='image/jpg')
         else:
             log.info("Image for {} is not yet ready!".format(url_id))
             return send_file('static/waiting.jpg', mimetype='image/jpg')
