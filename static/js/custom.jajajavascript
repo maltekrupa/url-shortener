@@ -28,6 +28,8 @@ function getIdForUrl() {
       } else {
         showErrorMessage(response.message);
       }
+    } else {
+      showErrorMessage("Please try again later");
     }
   };
 

@@ -137,7 +137,7 @@ def pretty_date(time=False):
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
     log.info("Invalid CSRF")
-    return "No shirt, no CSRF? No service!", 400
+    return "No shirt, no CSRF, no service!", 400
 
 
 @app.errorhandler(404)
@@ -223,15 +223,11 @@ def index():
 @app.before_first_request
 def setup():
     log.debug("I'm alive")
-    log.debug("I'm alive2")
 
     db = get_db()
-    log.debug(db)
 
     try:
-        log.debug("try start")
         setup_database(db)
-        log.debug("try end")
     except:
         raise
     else:
@@ -254,10 +250,6 @@ def connect_db():
     database_port = os.environ["DATABASE_PORT"]
     database_user = os.environ["DATABASE_USER"]
     database_password = os.environ["DATABASE_PASSWORD"]
-
-    log.debug(database_host)
-    log.debug(database_port)
-    log.debug(database_user)
 
     try:
         db = psycopg2.connect(
