@@ -4,6 +4,7 @@ import os
 import random
 import string
 import urllib
+import sys
 
 from pytz import utc
 
@@ -258,13 +259,19 @@ def connect_db():
     log.debug(database_port)
     log.debug(database_user)
 
-    db = psycopg2.connect(
-        host=database_host,
-        port=database_port,
-        user=database_user,
-        password=database_password
-    )
-    return db
+    try:
+        db = psycopg2.connect(
+            host=database_host,
+            port=database_port,
+            user=database_user,
+            password=database_password,
+            connect_timeout=5
+        )
+    except psycopg2.OperationalError as e:
+        log.error("Database timeout: {}".format(e))
+        sys.exit(1)
+    else:
+        return db
 
 
 def setup_database(db):
