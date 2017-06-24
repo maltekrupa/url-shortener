@@ -25,10 +25,10 @@ function getIdForUrl() {
       return;
     }
     response = JSON.parse(r.responseText);
-    if(response.error == null) {
+    if(response.message == null || response.message == "") {
       forwardToShortUrl(response.id);
     } else {
-      showErrorMessage(response.error);
+      showErrorMessage(response.message);
     }
   };
 

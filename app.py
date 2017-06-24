@@ -169,7 +169,7 @@ def url():
         url_valid(real_url)
         log.info("Validated {}.".format(real_url))
     except:
-        response = jsonify({"error": "invalid url"})
+        response = jsonify({"message": "invalid url"})
         response.headers['Get your *@#% together'] = "Please"
         return response
 
@@ -179,12 +179,12 @@ def url():
         insert_url(database_connection, url, url_id)
     except Exception as e:
         log.error("Couldn't write to database: {}".format(e))
-        return jsonify({"error": "database error"})
+        return jsonify({"message": "database error"})
     else:
         log.info("Created {} for: {}".format(url_id, url))
 
     return jsonify({
-        "error": None,
+        "message": None,
         "id": url_id,
         "url": url
     })
