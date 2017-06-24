@@ -12,6 +12,7 @@ from flask import render_template
 from flask import request
 from flask import send_file
 from flask import jsonify
+from flask import g
 
 from flask_wtf.csrf import CSRFProtect
 from flask_wtf.csrf import CSRFError
@@ -22,23 +23,12 @@ import requests
 import psycopg2
 import psycopg2.extras
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = os.environ["SECRET_KEY"]
 csrf = CSRFProtect(app)
-
-
-def setup_database(db):
-    cursor = db.cursor()
-    cursor.execute("""
-                   CREATE TABLE
-                   IF NOT EXISTS
-                   urls
-                   (timestamp timestamptz, id text, url text)
-                   """)
-    db.commit()
 
 
 def id_generator(
@@ -176,7 +166,8 @@ def url():
     url_id = id_generator()
 
     try:
-        insert_url(database_connection, url, url_id)
+        db = get_db()
+        insert_url(db, url, url_id)
     except Exception as e:
         log.error("Couldn't write to database: {}".format(e))
         return jsonify({"message": "database error"})
@@ -192,7 +183,8 @@ def url():
 
 @app.route('/<string(length=6):url_id>')
 def id(url_id):
-    db_response = get_url_from_id(database_connection, url_id)
+    db = get_db()
+    db_response = get_url_from_id(db, url_id)
     if db_response is None:
         return render_template('404.html'), 404
     else:
@@ -207,7 +199,8 @@ def id(url_id):
 
 @app.route('/<string(length=6):url_id>/img')
 def id_image(url_id):
-    db_response = get_url_from_id(database_connection, url_id)
+    db = get_db()
+    db_response = get_url_from_id(db, url_id)
     if db_response is None:
         return render_template('404.html'), 404
     else:
@@ -226,27 +219,70 @@ def index():
     return render_template('index.html')
 
 
-log.debug("I'm alive")
+@app.before_first_request
+def setup():
+    log.debug("I'm alive")
+    log.debug("I'm alive2")
 
-database_host = os.environ["DATABASE_HOST"]
-database_port = os.environ["DATABASE_PORT"]
-database_user = os.environ["DATABASE_USER"]
-database_password = os.environ["DATABASE_PASSWORD"]
+    db = get_db()
+    log.debug(db)
 
-database_connection = psycopg2.connect(
-    host=database_host,
-    port=database_port,
-    user=database_user,
-    password=database_password
-)
-try:
-    setup_database(database_connection)
-except:
-    raise
-else:
-    log.info("Database is setup")
+    try:
+        log.debug("try start")
+        setup_database(db)
+        log.debug("try end")
+    except:
+        raise
+    else:
+        log.info("Database is setup")
 
-log.info("Starting webapp")
-app.run(host='0.0.0.0', debug=True)
+    log.info("Starting webapp")
 
-log.info("Done")
+
+def get_db():
+    """Opens a new database connection if there is none yet for the
+    current application context.
+    """
+    if not hasattr(g, 'postgres'):
+        g.postgres = connect_db()
+    return g.postgres
+
+
+def connect_db():
+    database_host = os.environ["DATABASE_HOST"]
+    database_port = os.environ["DATABASE_PORT"]
+    database_user = os.environ["DATABASE_USER"]
+    database_password = os.environ["DATABASE_PASSWORD"]
+
+    log.debug(database_host)
+    log.debug(database_port)
+    log.debug(database_user)
+
+    db = psycopg2.connect(
+        host=database_host,
+        port=database_port,
+        user=database_user,
+        password=database_password
+    )
+    return db
+
+
+def setup_database(db):
+    cursor = db.cursor()
+    cursor.execute("""
+                   CREATE TABLE
+                   IF NOT EXISTS
+                   urls
+                   (timestamp timestamptz, id text, url text)
+                   """)
+    db.commit()
+
+
+@app.teardown_appcontext
+def close_db(error):
+    """Closes the database again at the end of the request."""
+    if hasattr(g, 'postgres'):
+        g.postgres.close()
+
+if __name__ == "__main__":
+    app.run()
