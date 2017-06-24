@@ -20,6 +20,7 @@ driver.accept_untrusted_certs = True
 driver.set_window_size(1366, 768)
 driver.execute_script('document.body.style.background = "white"')
 
+
 def get_urls(db):
     cursor = db.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -34,6 +35,7 @@ def get_urls(db):
         result = cursor.fetchall()
         return result
 
+
 def preview_exists(url_id):
     pwd = os.path.abspath("images")
     filename = pwd + "/" + str(url_id) + '.jpg'
@@ -41,6 +43,7 @@ def preview_exists(url_id):
         return True
     else:
         return False
+
 
 def create_image_for_url(url_id, url):
     log.info("Grabbing image for {}.".format(url_id))
@@ -50,6 +53,7 @@ def create_image_for_url(url_id, url):
     im = Image.open(image_object)
     im.save("images/{}.jpg".format(url_id), "JPEG", optimize=True, quality=80)
     log.info("Saved image for {}.".format(url_id))
+
 
 def main():
     while True:
@@ -72,6 +76,7 @@ def main():
 
         time.sleep(0.5)
         log.debug("Found no new urls.")
+
 
 if __name__ == '__main__':
     log.info("I'm alive")

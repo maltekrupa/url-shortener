@@ -3,7 +3,6 @@ import logging
 import os
 import random
 import string
-import sys
 import urllib
 
 from pytz import utc
@@ -30,13 +29,26 @@ app = Flask(__name__)
 app.secret_key = os.environ["SECRET_KEY"]
 csrf = CSRFProtect(app)
 
+
 def setup_database(db):
     cursor = db.cursor()
-    cursor.execute("CREATE TABLE IF NOT EXISTS urls (timestamp timestamptz, id text, url text)")
+    cursor.execute("""
+                   CREATE TABLE
+                   IF NOT EXISTS
+                   urls
+                   (timestamp timestamptz, id text, url text)
+                   """)
     db.commit()
 
-def id_generator(size=6, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
+
+def id_generator(
+    size=6,
+    chars=string.ascii_lowercase +
+    string.ascii_uppercase +
+    string.digits
+):
     return ''.join(random.choice(chars) for _ in range(size))
+
 
 def insert_url(db, url, url_id):
     cursor = db.cursor()
@@ -53,6 +65,7 @@ def insert_url(db, url, url_id):
         db.commit()
     except:
         raise
+
 
 def get_url_from_id(db, url_id):
     cursor = db.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -71,18 +84,21 @@ def get_url_from_id(db, url_id):
         result = cursor.fetchone()
         return result
 
+
 def url_valid(url):
     if not validators.url(url, public=True):
-        log.warning("Invalid URL ({}) or URN ({}).".format(url, created_url))
+        log.warning("Invalid URL ({}).".format(url))
         raise ValueError("Invalid URL or URN")
     log.info("Valid URL or URN: {}".format(url))
 
+
 def url_reachable(url):
     try:
-        r = requests.get(url, timeout=5)
+        requests.get(url, timeout=5)
     except:
         log.warning("Cannot reach {}".format(url))
         raise
+
 
 def pretty_date(time=False):
     """
@@ -93,7 +109,7 @@ def pretty_date(time=False):
     now = datetime.datetime.now(utc)
     if type(time) is int:
         diff = now - datetime.datetime.fromtimestamp(time)
-    elif isinstance(time,datetime.datetime):
+    elif isinstance(time, datetime.datetime):
         diff = now - time
     elif not time:
         diff = now - now
@@ -126,14 +142,17 @@ def pretty_date(time=False):
         return str(int(day_diff / 30)) + " months ago"
     return str(int(day_diff / 365)) + " years ago"
 
+
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
     log.info("Invalid CSRF")
     return "No shirt, no CSRF? No service!", 400
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
 
 @app.route('/url/', methods=["GET", "POST"])
 def url():
@@ -170,6 +189,7 @@ def url():
         "url": url
         })
 
+
 @app.route('/<string(length=6):url_id>')
 def id(url_id):
     db_response = get_url_from_id(database_connection, url_id)
@@ -179,7 +199,11 @@ def id(url_id):
         log.info("ID {} is valid".format(url_id))
         log.debug("DB Response: {}".format(db_response))
         user_friendly_date = pretty_date(db_response['timestamp'])
-        return render_template('id.html', data=db_response, user_friendly_date=user_friendly_date), 200
+        return render_template(
+                               'id.html',
+                               data=db_response,
+                               user_friendly_date=user_friendly_date), 200
+
 
 @app.route('/<string(length=6):url_id>/img')
 def id_image(url_id):
@@ -196,11 +220,11 @@ def id_image(url_id):
             log.info("Image for {} is not yet ready!".format(url_id))
             return send_file('static/waiting.jpg', mimetype='image/jpg')
 
+
 @app.route('/')
 def index():
-    return render_template('index.html',
-            greeting="Hello!",
-            greeting_small="Shorten a URL and get a preview of the status quo.")
+    return render_template('index.html')
+
 
 if __name__ == "__main__":
     log.debug("I'm alive")
