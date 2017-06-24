@@ -229,7 +229,17 @@ def index():
 if __name__ == "__main__":
     log.debug("I'm alive")
 
-    database_connection = psycopg2.connect("dbname=urls user=postgres")
+    database_host = os.environ["DATABASE_HOST"]
+    database_port = os.environ["DATABASE_PORT"]
+    database_user = os.environ["DATABASE_USER"]
+    database_password = os.environ["DATABASE_PASSWORD"]
+
+    database_connection = psycopg2.connect(
+        host=database_host,
+        port=database_port,
+        user=database_user,
+        password=database_password
+    )
     try:
         setup_database(database_connection)
     except:
