@@ -187,7 +187,7 @@ def url():
         "error": None,
         "id": url_id,
         "url": url
-        })
+    })
 
 
 @app.route('/<string(length=6):url_id>')
@@ -200,9 +200,9 @@ def id(url_id):
         log.debug("DB Response: {}".format(db_response))
         user_friendly_date = pretty_date(db_response['timestamp'])
         return render_template(
-                               'id.html',
-                               data=db_response,
-                               user_friendly_date=user_friendly_date), 200
+            'id.html',
+            data=db_response,
+            user_friendly_date=user_friendly_date), 200
 
 
 @app.route('/<string(length=6):url_id>/img')
