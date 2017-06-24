@@ -21,14 +21,13 @@ function getIdForUrl() {
   r.open("POST", "url/", true);
 
   r.onreadystatechange = function () {
-    if(r.readyState != 4 || r.status != 200) {
-      return;
-    }
-    response = JSON.parse(r.responseText);
-    if(response.message == null || response.message == "") {
-      forwardToShortUrl(response.id);
-    } else {
-      showErrorMessage(response.message);
+    if(r.readyState === XMLHttpRequest.DONE && r.status === 200) {
+      response = JSON.parse(r.responseText);
+      if(response.message == "" || response.message == null) {
+        forwardToShortUrl(response.id);
+      } else {
+        showErrorMessage(response.message);
+      }
     }
   };
 

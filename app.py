@@ -226,28 +226,27 @@ def index():
     return render_template('index.html')
 
 
-if __name__ == "__main__":
-    log.debug("I'm alive")
+log.debug("I'm alive")
 
-    database_host = os.environ["DATABASE_HOST"]
-    database_port = os.environ["DATABASE_PORT"]
-    database_user = os.environ["DATABASE_USER"]
-    database_password = os.environ["DATABASE_PASSWORD"]
+database_host = os.environ["DATABASE_HOST"]
+database_port = os.environ["DATABASE_PORT"]
+database_user = os.environ["DATABASE_USER"]
+database_password = os.environ["DATABASE_PASSWORD"]
 
-    database_connection = psycopg2.connect(
-        host=database_host,
-        port=database_port,
-        user=database_user,
-        password=database_password
-    )
-    try:
-        setup_database(database_connection)
-    except:
-        raise
-    else:
-        log.info("Database is setup")
+database_connection = psycopg2.connect(
+    host=database_host,
+    port=database_port,
+    user=database_user,
+    password=database_password
+)
+try:
+    setup_database(database_connection)
+except:
+    raise
+else:
+    log.info("Database is setup")
 
-    log.info("Starting webapp")
-    app.run(host='0.0.0.0', debug=True)
+log.info("Starting webapp")
+app.run(host='0.0.0.0', debug=True)
 
-    log.info("Done")
+log.info("Done")
