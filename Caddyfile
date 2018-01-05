@@ -1,0 +1,4 @@
+https://w9f.de {
+  gzip
+  proxy / localhost:5000
+}
