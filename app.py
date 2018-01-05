@@ -31,6 +31,16 @@ app = Flask(__name__)
 app.secret_key = os.environ["SECRET_KEY"]
 csrf = CSRFProtect(app)
 
+from flask import make_response
+from functools import update_wrapper
+
+def nocache(f):
+    def new_func(*args, **kwargs):
+        resp = make_response(f(*args, **kwargs))
+        resp.cache_control.no_cache = True
+        return resp
+    return update_wrapper(new_func, f)
+
 
 def id_generator(
     size=6,
@@ -199,6 +209,7 @@ def id(url_id):
 
 
 @app.route('/<string(length=6):url_id>/img')
+@nocache
 def id_image(url_id):
     db = get_db()
     db_response = get_url_from_id(db, url_id)
