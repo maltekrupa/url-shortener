@@ -12,13 +12,22 @@ function showErrorMessage(message) {
 }
 
 function forwardToShortUrl(id) {
-  var fullDomain = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port: '');
-  window.location.href = fullDomain + '/' + id;
+  var fullDomain = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port: '') + location.pathname;
+  if(location.pathname == "/") {
+    window.location.href = fullDomain + id;
+  } else {
+    window.location.href = fullDomain + '/' + id;
+  }
 }
 
 function getIdForUrl() {
   var r = new XMLHttpRequest();
-  r.open("POST", "url/", true);
+  if(location.pathname == "/") {
+    var destination = location.pathname + "url/";
+  } else {
+    var destination = location.pathname + "/url/";
+  }
+  r.open("POST", destination, true);
 
   r.onreadystatechange = function () {
     if(r.readyState === XMLHttpRequest.DONE && r.status === 200) {
@@ -30,6 +39,7 @@ function getIdForUrl() {
       }
     } else {
       showErrorMessage("Please try again later");
+      return;
     }
   };
 
