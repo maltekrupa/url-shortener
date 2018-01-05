@@ -2,6 +2,7 @@ import logging
 import time
 import os
 import io
+import sys
 
 from selenium import webdriver
 from PIL import Image
