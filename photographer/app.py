@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 driver = webdriver.PhantomJS(
         service_args=['--ignore-ssl-errors=true'],
-        executable_path='./phantomjs'
+        executable_path='/usr/local/bin/phantomjs'
         )
 driver.accept_untrusted_certs = True
 driver.set_window_size(1366, 768)
