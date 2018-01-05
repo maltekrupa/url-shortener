@@ -1,4 +1,13 @@
 https://w9f.de {
   gzip
   proxy / localhost:5000
+
+  header / {
+    X-Why-Are-You-Reading-This "¯\_(ツ)_/¯"
+    Strict-Transport-Security "max-age=31536000;"
+    X-XSS-Protection "1; mode=block"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "DENY"
+    -Server
+  }
 }
