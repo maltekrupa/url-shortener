@@ -1,0 +1,40 @@
+version: '3.4'
+
+services:
+  db:
+    image: postgres:10
+  web:
+    build: ./web
+    image: maltekrupa/url-shortener-web:1.0
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+    command: python app.py
+    volumes:
+      - ./images:/app/images
+    ports:
+      - target: 5000
+        published: 5000
+        protocol: tcp
+        mode: host
+    depends_on:
+      - db
+  photographer:
+    build: ./photographer
+    image: maltekrupa/url-shortener-photographer:1.0
+    environment:
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+    command: python app.py
+    volumes:
+      - ./images:/app/images
+    depends_on:
+      - db
+      - web
