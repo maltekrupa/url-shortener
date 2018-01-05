@@ -295,4 +295,4 @@ def close_db(error):
         g.postgres.close()
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host= '0.0.0.0')
