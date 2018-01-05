@@ -51,7 +51,7 @@ def create_image_for_url(url_id, url):
     screen = driver.get_screenshot_as_png()
     image_object = io.BytesIO(screen)
     im = Image.open(image_object)
-    im.save("images/{}.jpg".format(url_id), "JPEG", optimize=True, quality=80)
+    im.save("images/{}.jpg".format(url_id), "PNG", optimize=True, quality=80)
     log.info("Saved image for {}.".format(url_id))
 
 
@@ -81,5 +81,20 @@ def main():
 if __name__ == '__main__':
     log.info("I'm alive")
 
-    database_connection = psycopg2.connect("dbname=urls user=postgres")
+    database_host = os.environ["DATABASE_HOST"]
+    database_port = os.environ["DATABASE_PORT"]
+    database_user = os.environ["DATABASE_USER"]
+    database_password = os.environ["DATABASE_PASSWORD"]
+
+    try:
+        database_connection = psycopg2.connect(
+            host=database_host,
+            port=database_port,
+            user=database_user,
+            password=database_password,
+            connect_timeout=5
+        )
+    except psycopg2.OperationalError as e:
+        log.error("Database timeout: {}".format(e))
+        sys.exit(1)
     main()
