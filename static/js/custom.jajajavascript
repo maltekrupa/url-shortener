@@ -38,7 +38,7 @@ function getIdForUrl() {
         showErrorMessage(response.message);
       }
     } else {
-      showErrorMessage("Please try again later");
+      // showErrorMessage("Please try again later");
       return;
     }
   };
