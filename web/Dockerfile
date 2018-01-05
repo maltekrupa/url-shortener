@@ -1,7 +1,8 @@
 FROM python:3.6-slim
 
 # Install OS level requirements
-RUN apt-get update && apt-get install -y libpq-dev
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  libpq-dev
 
 # Add project specific content
 WORKDIR /app
