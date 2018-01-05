@@ -19,10 +19,7 @@ services:
     volumes:
       - ./images:/app/images
     ports:
-      - target: 5000
-        published: 5000
-        protocol: tcp
-        mode: host
+      - "127.0.0.1:5000:5000"
     depends_on:
       - db
   photographer:
