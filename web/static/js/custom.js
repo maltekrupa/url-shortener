@@ -1,6 +1,7 @@
 var urlField = document.getElementById('urlInput');
 var urlButton = document.getElementById('urlButton');
 var messageField = document.getElementById('urlInputLabel');
+var counterField = document.getElementById('counter');
 
 function showErrorMessage(message) {
   messageField.innerHTML = "Error: " + message + ". Sorry :(";
@@ -58,3 +59,23 @@ urlField.addEventListener("keydown", function(event) {
         getIdForUrl();
     }
 });
+
+function httpGetAsync(theUrl, callback) {
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.onreadystatechange = function() {
+    if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+      callback(xmlHttp.responseText);
+    }
+  }
+  xmlHttp.open("GET", theUrl, true);
+  xmlHttp.send(null);
+}
+
+function updateCounter() {
+  httpGetAsync('/counter', function(data) {
+    counterField.innerHTML = data;
+  });
+}
+
+updateCounter();
+var t=setInterval(updateCounter, 10000);
