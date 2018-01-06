@@ -2,6 +2,8 @@ https://w9f.de {
   gzip
   proxy / localhost:5000
 
+  ratelimit /url 5 6 minute
+
   header / {
     X-Why-Are-You-Reading-This "¯\_(ツ)_/¯"
     Strict-Transport-Security "max-age=31536000;"
