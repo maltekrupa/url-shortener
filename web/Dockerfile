@@ -11,4 +11,4 @@ ADD . /app/
 # Install project dependencies
 RUN pip install -r requirements.txt
 
-CMD gunicorn -b :5000 --workers=2 app:app
+CMD bash

@@ -15,7 +15,7 @@ services:
       - DATABASE_NAME=${DATABASE_NAME}
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-    command: python app.py
+    command: gunicorn -b :5000 --workers=2 app:app
     volumes:
       - ./images:/app/images
     ports:
