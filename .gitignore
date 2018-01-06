@@ -6,3 +6,4 @@ database.sqlite
 ghostdriver.log
 .DS_Store
 env.sh
+pg_data
