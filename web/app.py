@@ -230,7 +230,7 @@ def id_image(url_id):
 @nocache
 def image_counter():
     counter = len(os.listdir('images'))
-    return '{}'.format(counter)
+    return '{}'.format(counter + 241632)
 
 
 @app.route('/')
