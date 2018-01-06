@@ -29,7 +29,6 @@ log = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = os.environ["SECRET_KEY"]
-app.config['SERVER_NAME'] = os.environ["SERVER_NAME"]
 csrf = CSRFProtect(app)
 
 from flask import make_response
