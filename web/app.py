@@ -226,13 +226,6 @@ def id_image(url_id):
             return send_file('static/waiting.jpg', mimetype='image/jpg')
 
 
-@app.route('/counter')
-@nocache
-def image_counter():
-    counter = len(os.listdir('images'))
-    return '{}'.format(counter + 241632)
-
-
 @app.route('/')
 def index():
     return render_template('index.html')

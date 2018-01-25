@@ -1,7 +1,6 @@
 var urlField = document.getElementById('urlInput');
 var urlButton = document.getElementById('urlButton');
 var messageField = document.getElementById('urlInputLabel');
-var counterField = document.getElementById('counter');
 
 function showErrorMessage(message) {
   messageField.innerHTML = "Error: " + message + ". Sorry :(";
@@ -70,12 +69,3 @@ function httpGetAsync(theUrl, callback) {
   xmlHttp.open("GET", theUrl, true);
   xmlHttp.send(null);
 }
-
-function updateCounter() {
-  httpGetAsync('/counter', function(data) {
-    counterField.innerHTML = data;
-  });
-}
-
-updateCounter();
-var t=setInterval(updateCounter, 10000);
