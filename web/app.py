@@ -12,6 +12,7 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import send_file
+from flask import send_from_directory
 from flask import jsonify
 from flask import g
 
@@ -148,6 +149,12 @@ def pretty_date(time=False):
 def handle_csrf_error(e):
     log.info("Invalid CSRF")
     return "No shirt, no CSRF, no service!", 400
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+            'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 @app.errorhandler(404)
