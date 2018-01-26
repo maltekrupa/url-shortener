@@ -15,9 +15,12 @@ from flask import send_file
 from flask import send_from_directory
 from flask import jsonify
 from flask import g
+from flask import make_response
 
 from flask_wtf.csrf import CSRFProtect
 from flask_wtf.csrf import CSRFError
+
+from functools import update_wrapper
 
 import validators
 import requests
@@ -32,8 +35,6 @@ app = Flask(__name__)
 app.secret_key = os.environ["SECRET_KEY"]
 csrf = CSRFProtect(app)
 
-from flask import make_response
-from functools import update_wrapper
 
 def nocache(f):
     def new_func(*args, **kwargs):
@@ -303,4 +304,4 @@ def close_db(error):
 
 if __name__ == "__main__":
     print("I'm alive!")
-    app.run(host= '0.0.0.0')
+    app.run(host='0.0.0.0')
