@@ -267,7 +267,6 @@ def id(url_id):
     if db_response is None:
         return render_template('404.html'), 404
     else:
-        log.info("ID {} is valid".format(url_id))
         user_friendly_date = pretty_date(db_response['timestamp'])
         return render_template(
             'id.html',
@@ -283,7 +282,6 @@ def id_image(url_id):
     if db_response is None:
         return render_template('404.html'), 404
     else:
-        log.info("ID {} is valid. Let's serve an image.".format(url_id))
         pwd = os.path.abspath("images")
         filename = pwd + "/" + str(url_id) + '.jpg'
         if os.path.isfile(filename):
