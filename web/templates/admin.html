@@ -2,16 +2,24 @@
 
 {% block content %}
 
+    <table class="u-full-width">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>URL</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
 {% for url in urls %}
-    <div class="row">
-      <div class="one-half column">
-        <p>{{ url[1] }}</p>
-      </div>
-      <div class="one-half column">
-        <p>{{ url[2] }}</p>
-      </div>
-    </div>
+        <tr>
+          <td>{{ url[1] }}</td>
+          <td>{{ url[2]</td>
+          <td>{{ url[0]</td>
+        </tr>
 {% endfor %}
+      </tbody>
+    </table>
 
     <script>var csrf_token = '{{ csrf_token() }}';</script>
     <script type=text/javascript src="{{ url_for('static', filename='js/custom.js') }}"></script>
