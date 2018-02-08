@@ -10,6 +10,8 @@ services:
     image: maltekrupa/url-shortener-web:1.0
     environment:
       - SECRET_KEY=${SECRET_KEY}
+      - BASIC_AUTH_USERNAME=${BASIC_AUTH_USERNAME}
+      - BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD}
       - DATABASE_HOST=${DATABASE_HOST}
       - DATABASE_PORT=${DATABASE_PORT}
       - DATABASE_NAME=${DATABASE_NAME}
