@@ -38,7 +38,6 @@ app = Flask(__name__)
 app.secret_key = os.environ["SECRET_KEY"]
 csrf = CSRFProtect(app)
 
-
 basic_auth_username = os.environ["BASIC_AUTH_USERNAME"]
 basic_auth_password = os.environ["BASIC_AUTH_PASSWORD"]
 
