@@ -212,6 +212,8 @@ def page_not_found(e):
 @app.route('/admin', methods=["GET"])
 @requires_auth
 def admin():
+    log.info("/admin request!")
+
     db = get_db()
 
     all_urls = get_all_urls(db)
