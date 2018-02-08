@@ -52,8 +52,9 @@ def check_auth(username, password):
 def authenticate():
     """Sends a 401 response that enables basic auth"""
     return Response(
-    'haha', 401,
-    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+            'haha', 401,
+            {'WWW-Authenticate': 'Basic realm="Login Required"'}
+            )
 
 
 def requires_auth(f):
@@ -96,7 +97,7 @@ def insert_url(db, url, url_id):
                 (%s, %s, %s)
                 """, data)
         db.commit()
-    except:
+    except psycopg2.Error as e:
         raise
 
 
@@ -108,7 +109,7 @@ def get_all_urls(db):
                 SELECT * FROM urls
                 ORDER BY timestamp DESC
                 """)
-    except:
+    except psycopg2.Error as e:
         raise
     else:
         result = cursor.fetchall()
@@ -126,7 +127,7 @@ def get_url_from_id(db, url_id):
                 ORDER BY timestamp DESC
                 LIMIT 1
                 """, data)
-    except:
+    except psycopg2.Error as e:
         raise
     else:
         result = cursor.fetchone()
@@ -143,9 +144,9 @@ def url_valid(url):
 def url_reachable(url):
     try:
         requests.get(url, timeout=5)
-    except:
+    except requests.exceptions.RequestException as e:
         log.warning("Cannot reach {}".format(url))
-        raise
+        log.warning("Error: {}".format(e))
 
 
 def pretty_date(time=False):
@@ -199,8 +200,10 @@ def handle_csrf_error(e):
 
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-            'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(
+            os.path.join(app.root_path, 'static'),
+            'favicon.ico', mimetype='image/vnd.microsoft.icon'
+            )
 
 
 @app.errorhandler(404)
@@ -234,7 +237,7 @@ def url():
     try:
         url_valid(real_url)
         log.info("Validated {}.".format(real_url))
-    except:
+    except ValueError:
         response = jsonify({"message": "invalid url"})
         response.headers['Get your *@#% together'] = "Please"
         return response
@@ -303,8 +306,8 @@ def setup():
 
     try:
         setup_database(db)
-    except:
-        raise
+    except psycopg2.Error as e:
+        log.error("Cannot setup database!\n{}".format(e))
     else:
         log.info("Database is setup")
 
@@ -357,6 +360,7 @@ def close_db(error):
     """Closes the database again at the end of the request."""
     if hasattr(g, 'postgres'):
         g.postgres.close()
+
 
 if __name__ == "__main__":
     print("I'm alive!")
