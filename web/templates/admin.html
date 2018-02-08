@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="row">
 
 {% for url in urls %}
+    <div class="row">
       <div class="one-half column">
-        <p>{{ url }}</p>
+        <p>{{ url[1] }}</p>
       </div>
       <div class="one-half column">
-        <p></p>
+        <p>{{ url[2] }}</p>
       </div>
-{% endfor %}
     </div>
+{% endfor %}
 
     <script>var csrf_token = '{{ csrf_token() }}';</script>
     <script type=text/javascript src="{{ url_for('static', filename='js/custom.js') }}"></script>
