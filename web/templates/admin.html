@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="row">
+
+{% for url in urls %}
+      <div class="one-half column">
+        <p>{{ url }}</p>
+      </div>
+      <div class="one-half column">
+        <p></p>
+      </div>
+{% endfor %}
+    </div>
+
+    <script>var csrf_token = '{{ csrf_token() }}';</script>
+    <script type=text/javascript src="{{ url_for('static', filename='js/custom.js') }}"></script>
+{% endblock %}

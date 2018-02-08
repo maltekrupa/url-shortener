@@ -20,6 +20,9 @@ from flask import make_response
 from flask_wtf.csrf import CSRFProtect
 from flask_wtf.csrf import CSRFError
 
+from functools import wraps
+from flask import request, Response
+
 from functools import update_wrapper
 
 import validators
@@ -34,6 +37,35 @@ log = logging.getLogger(__name__)
 app = Flask(__name__)
 app.secret_key = os.environ["SECRET_KEY"]
 csrf = CSRFProtect(app)
+
+
+basic_auth_username = os.environ["BASIC_AUTH_USERNAME"]
+basic_auth_password = os.environ["BASIC_AUTH_PASSWORD"]
+
+
+def check_auth(username, password):
+    """This function is called to check if a username /
+    password combination is valid.
+    """
+    return username == basic_auth_username and password == basic_auth_password
+
+
+def authenticate():
+    """Sends a 401 response that enables basic auth"""
+    return Response(
+    'Could not verify your access level for that URL.\n'
+    'You have to login with proper credentials', 401,
+    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+    return decorated
 
 
 def nocache(f):
@@ -68,6 +100,21 @@ def insert_url(db, url, url_id):
         db.commit()
     except:
         raise
+
+
+def get_all_urls(db):
+    cursor = db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    try:
+        cursor.execute("""
+                SELECT * FROM urls
+                ORDER BY timestamp DESC
+                """)
+    except:
+        raise
+    else:
+        result = cursor.fetchone()
+        return result
 
 
 def get_url_from_id(db, url_id):
@@ -161,6 +208,16 @@ def favicon():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+
+@app.route('/admin', methods=["GET"])
+@requires_auth
+def admin():
+    db = get_db()
+
+    all_urls = get_all_urls(db)
+
+    return render_template('admin.html', urls=all_urls)
 
 
 @app.route('/url/', methods=["GET", "POST"])
