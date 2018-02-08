@@ -52,7 +52,8 @@ def create_image_for_url(url_id, url):
     screen = driver.get_screenshot_as_png()
     image_object = io.BytesIO(screen)
     im = Image.open(image_object)
-    im.save("images/{}.jpg".format(url_id), "PNG", optimize=True, quality=80)
+    im.save("images/temp-{}.jpg".format(url_id), "PNG", optimize=True, quality=80)
+    os.rename("images/temp-{}.jpg".format(url_id), "images/{}.jpg".format(url_id))
     log.info("Saved image for {}.".format(url_id))
 
 
