@@ -264,7 +264,6 @@ def id(url_id):
         return render_template('404.html'), 404
     else:
         log.info("ID {} is valid".format(url_id))
-        log.debug("DB Response: {}".format(db_response))
         user_friendly_date = pretty_date(db_response['timestamp'])
         return render_template(
             'id.html',
