@@ -112,7 +112,7 @@ def get_all_urls(db):
     except:
         raise
     else:
-        result = cursor.fetchone()
+        result = cursor.fetchall()
         return result
 
 
