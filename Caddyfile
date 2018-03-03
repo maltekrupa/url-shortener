@@ -1,6 +1,6 @@
 https://w9f.de {
   gzip
-  proxy / localhost:5000
+  proxy / web:5000
   log stdout
 
   ratelimit /url 5 6 minute

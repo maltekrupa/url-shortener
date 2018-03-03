@@ -1,6 +1,15 @@
 version: '3.4'
 
 services:
+  # build caddy via:
+  # docker build --build-arg plugins=authz,ratelimit github.com/abiosoft/caddy-docker.git -t url-shortener-caddy
+  caddy:
+    image: url-shortener-caddy
+    volumes:
+      - ./Caddyfile:/etc/Caddyfile
+    ports:
+      - "80:80"
+      - "443:443"
   db:
     image: postgres:10
     volumes:
