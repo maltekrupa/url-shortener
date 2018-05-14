@@ -11,7 +11,7 @@ https://w9f.de {
     X-XSS-Protection "1; mode=block"
     X-Content-Type-Options "nosniff"
     X-Frame-Options "DENY"
-    Referrer-Policy: origin
+    Referrer-Policy "origin"
     -Server
   }
 }
