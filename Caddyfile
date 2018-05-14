@@ -11,7 +11,7 @@ https://w9f.de {
     X-Content-Type-Options "nosniff"
     X-Frame-Options "DENY"
     Referrer-Policy "origin"
-    Content-Security-Policy "default-src 'self';"
+    Content-Security-Policy "default-src 'none'; script-src 'unsafe-inline' 'self'; connect-src 'self'; img-src 'self'; style-src 'unsafe-inline' 'self'; font-src 'self'"
     -Server
   }
 
